@@ -23,21 +23,37 @@ public class Plugin : BaseUnityPlugin
     {
         internal static bool CompleteMissingPortraits;
     }
-    internal static bool IsActive { get; set; }
     private void Awake() 
     {
         Log = Logger;
         Config.CompleteMissingPortraits = base.Config.Bind("Art", "Complete Missing Portraits", true, "Toggle whether to complete missing card portraits with a default texture").Value;
-        harmony.PatchAll(assembly);
+        harmony.PatchAll(Assembly.GetExecutingAssembly());
+        StarterDeckManager.New(GUID, "Undead", Resources.Load<Texture2D>("Art/UI/Ascension/starterdeck_icon_vanilla"), new string[]
+        {
+            "Gravedigger",
+            "Zombie",
+            "FrankNStein",
+        });
+        StarterDeckManager.New(GUID, "Technology", Resources.Load<Texture2D>("Art/UI/Ascension/starterdeck_icon_vanilla"), new string[]
+        {
+            "Shieldbot",
+            "Sniper",
+            "CloserBot",
+        });
+        StarterDeckManager.New(GUID, "Wizard", Resources.Load<Texture2D>("Art/UI/Ascension/starterdeck_icon_vanilla"), new string[]
+        {
+            "RubyGolem",
+            "JuniorSage",
+            "GemFiend",
+        });
         CardManager.ModifyCardList += OnModifyCardList;
-        StarterDeckManager.ModifyDeckList += OnModifyDeckList;
         Log.LogInfo($"Loaded {NAME} {VERSION}");
     }
     private static List<CardInfo> OnModifyCardList(List<CardInfo> list)
     {
         foreach (CardInfo item in list.Where(x => x.IsBaseGameCard()))
         {
-            if (item.metaCategories.Count == 0 || item.metaCategories.Count == 1 && (item.metaCategories.Contains(CardMetaCategory.Rare) || item.metaCategories.Contains(CardMetaCategory.GBCPlayable)))
+            if (item.metaCategories.Count == 0 || (item.metaCategories.Count == 1 && item.metaCategories.Contains(CardMetaCategory.GBCPlayable)))
             {
                 continue;
             }
@@ -85,11 +101,5 @@ public class Plugin : BaseUnityPlugin
         }
         return list;
     }
-    private static List<StarterDeckManager.FullStarterDeck> OnModifyDeckList(List<StarterDeckManager.FullStarterDeck> list)
-    {
-        return list;
-    }
-    private static readonly Assembly assembly = Assembly.GetExecutingAssembly();
-    private static readonly AssetBundle assets = AssetBundle.LoadFromFile(Path.Combine(Path.GetDirectoryName(assembly.Location), "assets"));
     private static readonly Harmony harmony = new(GUID);
 }
