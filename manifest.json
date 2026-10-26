@@ -1,0 +1,10 @@
+{
+    "name": "Original Card Port",
+    "version_number": "0.0.1",
+    "website_url": "https://github.com/chytridi05/inscryption-3d-cardport",
+    "dependencies":
+    [
+        "BepInEx-BepInExPack_Inscryption-5.4.2305",
+        "API_dev-API-2.24.1"
+    ]
+}
